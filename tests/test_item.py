@@ -1,30 +1,56 @@
-"""Здесь надо написать тесты с использованием pytest для модуля item."""
 import pytest
-from src.item import Item
-from src.phone import Phone
+from src.item import Item, InstantiateCSVError
 
-item1 = Item("Смартфон", 10000, 20)
-item2 = Item("Ноутбук", 20000, 5)
-phone1 = Phone("iPhone 14", 120000, 5, 2)
-Item.pay_rate = 0.8
-
-def test_calculate_total_price():
-    assert item1.price * item1.quantity == 200000
-    assert item2.price * item2.quantity == 100000
-
-def test_apply_discount():
-    assert  item1.price * Item.pay_rate == 8000
-    assert  item2.price * Item.pay_rate == 16000
-
-def test_repr():
-  #  assert repr(item1) == "Item('Смартфон', 10000, 20)"
-    assert int(repr(item1.quantity)) + int(repr(phone1.quantity)) == 25
-    assert phone1.quantity + phone1.quantity == 10
+"""Здесь надо написать тесты с использованием pytest для модуля item."""
 
 
-def test_str():
-    assert str(item1) == 'Смартфон'
+@pytest.fixture
+def item():
+    return Item("Смартфон", 10000, 20)
 
-def test_add():
-    assert item1 + phone1 == 25
 
+def test_repr(item):
+    assert repr(item) == "Item('Смартфон', 10000, 20)"
+
+
+def test_str(item):
+    assert str(item) == 'Смартфон'
+
+
+def test_calculate_total_price(item):
+    assert item.calculate_total_price() == 200000
+
+
+def test_apply_discount(item):
+    item.pay_rate = 0.8
+    item.apply_discount()
+    assert item.price == 8000.0
+
+
+def test_name_setter(item):
+    item.name = 'Телефон'
+    assert item.name == 'Телефон'
+    item.name = 'СуперСмартфон'
+    assert item.name == 'Телефон'
+
+
+def test_instantiate_from_csv(item):
+    item.instantiate_from_csv()
+    assert len(item.all) == 5
+    assert item.all[0].name == 'Смартфон'
+
+
+def test_string_to_number(item):
+    assert isinstance(item.string_to_number(item.quantity), int)
+
+
+def test_exception_instantiate_from_csv():
+    Item.file_name = '123'
+    with pytest.raises(FileNotFoundError) as e:
+        Item.instantiate_from_csv()
+    assert str(e.value) == f'Отсутствует файл {Item.file_name}'
+
+    Item.file_name = 'items_test.csv'
+    with pytest.raises(InstantiateCSVError) as e:
+        Item.instantiate_from_csv()
+    assert str(e.value) == f'Файл {Item.file_name} поврежден'
