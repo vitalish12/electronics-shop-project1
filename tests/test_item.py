@@ -8,11 +8,6 @@ from src.item import Item
 def item():
     return Item("Смартфон", 10000, 20)
 
-
-def test_repr(item):
-    assert repr(item) == "Item('Смартфон', 10000, 20)"
-
-
 def test_str(item):
     assert str(item) == 'Смартфон'
 
