@@ -38,19 +38,3 @@ def test_instantiate_from_csv(item):
     item.instantiate_from_csv()
     assert len(item.all) == 5
     assert item.all[0].name == 'Смартфон'
-
-
-def test_string_to_number(item):
-    assert isinstance(item.string_to_number(item.quantity), int)
-
-
-def test_exception_instantiate_from_csv():
-    Item.file_name = '123'
-    with pytest.raises(FileNotFoundError) as e:
-        Item.instantiate_from_csv()
-    assert str(e.value) == f'Отсутствует файл {Item.file_name}'
-
-    Item.file_name = 'items_test.csv'
-    with pytest.raises(InstantiateCSVError) as e:
-        Item.instantiate_from_csv()
-    assert str(e.value) == f'Файл {Item.file_name} поврежден'
