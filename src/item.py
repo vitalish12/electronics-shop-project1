@@ -1,5 +1,4 @@
 import csv
-import json
 import os
 
 
@@ -68,7 +67,6 @@ class Item:
                 print(row)
                 cls.all.append(cls(row['name'], int(row['price']), int(row['quantity'])))
 
-        return len(cls.all)
 
     @staticmethod
     def string_to_number(number):
