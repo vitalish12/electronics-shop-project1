@@ -81,3 +81,21 @@ class Item:
         if not isinstance(count_sim, int) or count_sim <= 0:
             raise ValueError("Количество физических SIM-карт должно быть целым числом больше нуля")
         self.__number_of_sim = count_sim
+        
+    @classmethod
+    def instantiate_from_csv(cls):
+        try:
+            with open(f'../src/{cls.file_name}', encoding='windows-1251') as f:
+                reader = csv.DictReader(f)
+                if len(list(csv.reader(f))[0]) != 3:
+                    raise InstantiateCSVError(f'Файл {cls.file_name} поврежден')
+                f.seek(0)
+                for word in reader:
+                    cls.all.append(cls(word['name'], word['price'], word['quantity']))
+        except FileNotFoundError:
+            raise FileNotFoundError(f'Отсутствует файл {cls.file_name}')
+        except PermissionError:
+            print(f'Невозможно создать файл {cls.file_name}')
+            
+ class InstantiateCSVError(Exception):
+    pass            
