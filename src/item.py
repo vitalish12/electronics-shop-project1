@@ -8,6 +8,7 @@ class Item:
     """
     pay_rate = 1.0
     all = []
+    file_name = 'items.csv'
 
     def __init__(self, name: str, price: float, quantity: int):
         """
